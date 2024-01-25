@@ -9,10 +9,10 @@ class Tree
 
   MOVES = [[-2, -1], [-2, 1], [-1, -2], [-1, 2], [1, -2], [1, 2], [2, -1], [2, 1]].freeze
 
-  def knight_moves(inital, target)
+  def knight_moves(initial, target)
     @target = target
     @results = []
-    build_tree(Node.new(inital))
+    build_tree(Node.new(initial))
   end
 
   def build_tree(node, depth = 0)
@@ -21,12 +21,13 @@ class Tree
     if node.position == target
       @targetDepth = depth
       @results << node
+      return
     end
 
     MOVES.each do |move|
       position = node.position.zip(move).map { |a, b| a + b }
 
-      next unless position.all? { |num| num.positive? && num < 8 }
+      next unless valid_position?(position)
 
       child = Node.new(position, node)
       node.children << child
@@ -43,8 +44,8 @@ class Tree
       p node.position
     end
   end
-end
 
-test = Tree.new
-test.knight_moves([0, 0], [3, 3])
-test.output_moves
+  def valid_position?(position)
+    position.all? { |num| num.positive? && num < 8 }
+  end
+end
