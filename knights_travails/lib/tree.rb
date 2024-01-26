@@ -1,18 +1,26 @@
 require_relative 'node'
 
 class Tree
-  attr_accessor :target, :results
+  attr_accessor :target, :targetDepth, :results
 
   def initialize
+    reset_state
+  end
+
+  def reset_state
     @targetDepth = 6
+    @results = []
   end
 
   MOVES = [[-2, -1], [-2, 1], [-1, -2], [-1, 2], [1, -2], [1, 2], [2, -1], [2, 1]].freeze
 
   def knight_moves(initial, target)
+    reset_state
     @target = target
-    @results = []
     build_tree(Node.new(initial))
+    return combine_moves.reverse unless @results.empty?
+
+    nil
   end
 
   def build_tree(node, depth = 0)
@@ -21,7 +29,7 @@ class Tree
     if node.position == target
       @targetDepth = depth
       @results << node
-      return
+      return node
     end
 
     MOVES.each do |move|
@@ -36,16 +44,19 @@ class Tree
     node
   end
 
-  def output_moves
+  def combine_moves
+    output = []
+
     node = @results[-1]
-    p node.position
+
     while node.parent
+      output << node.position
       node = node.parent
-      p node.position
     end
+    output << node.position
   end
 
   def valid_position?(position)
-    position.all? { |num| num.positive? && num < 8 }
+    position.all? { |num| num >= 0 && num < 8 }
   end
 end
