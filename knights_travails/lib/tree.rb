@@ -18,9 +18,8 @@ class Tree
     reset_state
     @target = target
     build_tree(Node.new(initial))
-    return combine_moves.reverse unless @results.empty?
-
-    nil
+    puts "You made it in #{targetDepth}! Here's your path: "
+    combine_moves.reverse.each { |move| p move }
   end
 
   def build_tree(node, depth = 0)
